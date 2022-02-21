@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Aldrich|Arima+Madurai|Arvo|Henny+Penny|Indie+Flower|Libre+Baskerville|Pirata+One|Poiret+One|Sancreek|Satisfy|Share+Tech+Mono|Smokum|Snowburst+One|Special+Elite"
+          rel="stylesheet">
+    <path d="M0,0C27.272727272727273,0,27.272727272727273,-80.78125,54.54545454545455,-80.78125"></path>
+</head>
+<style type="text/css">
+
+</style>
+<body>
+<button type="button" onclick="changeYear()">Year</button>
+<script type="text/javascript">
+
+    Promise.all([
+        d3.csv('billionairesCleanedNoColumn.csv')
+    ]).then(ready);
+
+    function ready(d) {
+        //python -m http.server 8888
+        //var chart = AnimatedBarChart(d[0])
+        var updatedData=d[0]
+        console.log(updatedData)
+        var chart = d3.interval(() => {
+            updatedData=preprocess(updatedData);
+
+            update(updatedData);
+        }, 1000);
+        // var chart = update(d[0])
+    }
+
+    function preprocess(data) {
+        data = data.map(function(d) {
+            return{industry: d.industry, wealth: +d.wealth + 10};
+        })
+        console.log(data)
+        // data = d3.shuffle([...data]);
+        return data;
+    }
+
+    const WIDTH = 1000;
+    const HEIGHT = 500;
+    const INNER_HEIGHT = HEIGHT - 20;
+    const BAR_WIDTH = 24;
+    const BAR_GAP = 5;
+
+    const scale = d3.scaleLinear()
+            .domain([0, 1000])
+            .range([0, INNER_HEIGHT]);
+
+    function y(d) {
+        return HEIGHT - scale(d.wealth);
+    }
+
+    function height(d) {
+        return scale(d.wealth);
+    }
+
+    const svg = d3.select("body").append("svg")
+        .attr("width", WIDTH)
+        .attr("height", HEIGHT)
+        .append("g");
+
+    function update(data) {
+
+        const t = d3.transition()
+            .duration(750);
+
+
+
+
+        const bar = svg.selectAll("g")
+            .data(data);
+
+        // EXIT section
+        bar
+            .exit()
+            .remove();
+
+        // UPDATE section
+        bar
+            .transition(t)
+            .attr("transform", (d, i) => `translate(${i * (BAR_WIDTH + BAR_GAP)},${y(d)})`);
+
+        bar.select("rect")
+            .transition(t)
+            .attr("height", HEIGHT);
+
+        bar.select("text")
+            .transition(t)
+            .tween("text", function (d) {
+                const v0 = this.textContent || "0";
+                const v1 = d.wealth;
+                const i = d3.interpolateRound(v0, v1);
+                return t => this.textContent = i(t);
+            });
+
+        // ENTER section
+        const barEnter = bar
+            .enter().append("g")
+            .attr("transform", (d, i) => `translate(${i * (BAR_WIDTH + BAR_GAP)},${INNER_HEIGHT})`);
+
+        barEnter
+            .transition(t)
+            .attr("transform", (d, i) => `translate(${i * (BAR_WIDTH + BAR_GAP)},${y(d)})`);
+
+        const rect = barEnter.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", BAR_WIDTH)
+            .attr("height", 0);
+
+        rect
+            .transition(t)
+            .attr("height", height);
+
+        const text = barEnter.append("text")
+            .text(d => d.industry)
+            .attr("text-anchor", "middle")
+            .attr("dx", BAR_WIDTH / 2)
+            .attr("dy", -2);
+    }
+
+    function AnimatedBarChart(data) {
+        const w = 800
+        const h = 500
+        console.log(data)
+        const xScale = d3.scaleBand() //Ordinal scale
+            .domain(d3.range(8)) //sets the input domain for the scale
+            .rangeRound([0, w]) //enables rounding of the range
+            .paddingInner(0.05); //spacing between each bar
+
+        const yScale = d3.scaleLinear()
+            .domain([0, 1000]) //sets the upper end of the input domain to the largest data value in dataset
+            .range([0, h]);
+
+        const svg = d3.select("body")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+        // const chart = d3.select("body")
+        //     .append("svg")
+        //     .attr("width", w)
+        //     .attr("height", h)
+        //     .append("g");
+        //
+        // var bars = chart.selectAll("g")
+        //     .data(data)
+        //     .enter()
+        //     .append("g")
+        //     .attr("class", "chart-bar");
+        // .attr("transform", function (d, i) {
+        //     return "translate(" + d.industry + ",0)";
+        // });
+
+//fill in the bars with color and do nice rising transition
+//         var rect = bars.append("rect")
+//             .attr("y", 500) //setting y at the bottom for the transition effect
+//             .attr("height", 0)      //setting height 0 for the transition effect
+//             .attr("width", xScale.bandwidth()) //Asks for the bandwith of the scale
+//             .style("fill", "rgb(234, 229, 229)")
+//             .transition()
+//             .duration(700)
+//                 .ease("linear")
+//                 .attr("height", h - yScale(d.wealth))
+//                 .attr("y", function (d) {
+//                     return yScale(d.wealth);
+//                 })
+//             .style("fill", "rgb(70, 130, 180)");
+
+        svg.selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("x", function (d, i) { // position in x-axis
+                return xScale(i); // we will pass the values from the dataset
+            })
+            .attr("y", function (d) {
+                return h - yScale(d.wealth);
+            })
+            .attr("width", xScale.bandwidth()) //Asks for the bandwith of the scale
+            .attr("height", function (d) {
+                return yScale(d.wealth);
+            })
+            .attr("fill", function (d) {
+                return "rgb(" + Math.round(d.wealth / 50 * 8) + ",0," + Math.round(d.wealth / 50 * 10) + ")"; //Change the color of the bar depending on the value
+            })
+            .transition()
+            .duration(700)
+            .ease("linear")
+            .attr("height", calcBarHeight)
+            .attr("y", function (d) {
+                return h - yScale(d.wealth);
+            })
+            .style("fill", "rgb(70, 130, 180)");
+
+
+    }
+
+    function changeYear() {
+        Promise.all([
+            d3.csv('billionairesCleanedNoColumn2.csv')
+        ]).then(updateBar)
+
+    }
+
+    function updateBar(d) {
+        const w = 800
+        const h = 500
+        console.log(d[0])
+        const t = d3.transition()
+            .duration(750);
+        const xScale = d3.scaleBand() //Ordinal scale
+            .domain(d3.range(8)) //sets the input domain for the scale
+            .rangeRound([0, w]) //enables rounding of the range
+            .paddingInner(0.05); //spacing between each bar
+
+        const yScale = d3.scaleLinear()
+            .domain([0, 1000]) //sets the upper end of the input domain to the largest data value in dataset
+            .range([0, h]);
+
+        d3.select("body").select("svg").selectAll("rect")
+            .data(d[0])
+            .transition() // <---- Here is the transition
+            .duration(2000) // 2 seconds
+            .attr("y", function (d) {
+                return 500 - yScale(d.wealth);
+            })
+            .attr("height", function (d) {
+                return yScale(d.wealth);
+            })
+            .attr("fill", function (d) {
+                return "rgb(" + Math.round(d.wealth / 50 * 8) + ",0," + Math.round(d.wealth / 50 * 8) + ")";
+            });
+    }
+
+
+</script>
+
+</body>
+</html>
