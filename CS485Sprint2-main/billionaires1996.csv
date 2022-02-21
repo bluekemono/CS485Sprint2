@@ -1,2 +1,10 @@
-,communication,entertainment,finance,medicals,raw materials,real estate,retail,service,software
-0,84.80000000000001,8.5,95.39999999999999,41.900000000000006,79.19999999999999,119.7,72.39999999999999,51.7,65.1
+industry,wealth
+communication,84.80000000000001
+entertainment,8.5
+finance,95.39999999999999
+medicals,41.900000000000006
+raw materials,79.19999999999999
+real estate,119.7
+retail,72.39999999999999
+service,51.7
+software,65.1

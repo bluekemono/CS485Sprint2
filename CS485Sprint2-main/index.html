@@ -12,33 +12,42 @@
 
 </style>
 <body>
-<button type="button" onclick="changeYear()">Year</button>
+
 <script type="text/javascript">
 
-    Promise.all([
-        d3.csv('billionairesCleanedNoColumn.csv')
-    ]).then(ready);
-
-    function ready(d) {
+    // Promise.all([
+    //     d3.csv('billionaires1996.csv')
+    // ]).then(ready);
+    var count = 0
+    ready()
+    async function ready() {
         //python -m http.server 8888
-        //var chart = AnimatedBarChart(d[0])
-        var updatedData=d[0]
-        console.log(updatedData)
-        var chart = d3.interval(() => {
-            updatedData=preprocess(updatedData);
-
+        var chart = d3.interval(async function () {
+            let updatedData =  await preprocess();
             update(updatedData);
-        }, 1000);
-        // var chart = update(d[0])
+        },8000);
     }
 
-    function preprocess(data) {
-        data = data.map(function(d) {
-            return{industry: d.industry, wealth: +d.wealth + 10};
-        })
-        console.log(data)
-        // data = d3.shuffle([...data]);
-        return data;
+      async function preprocess() {
+        if(count===0){
+            count = count + 1
+            var d = await d3.csv('billionaires1996.csv')
+            return  d;
+        }
+        else if (count === 1) {
+            count = count + 1
+            var d = await d3.csv('billionaires2001.csv')
+            return d
+        } else if (count === 2) {
+            count = count + 1
+            var d = await d3.csv('billionaires2014.csv')
+            return d
+
+        } else if (count === 3) {
+            count = count + 1
+            var d = await d3.csv('billionairesCleanedNoColumn.csv')
+            return d
+        }
     }
 
     const WIDTH = 1000;
@@ -48,8 +57,8 @@
     const BAR_GAP = 5;
 
     const scale = d3.scaleLinear()
-            .domain([0, 1000])
-            .range([0, INNER_HEIGHT]);
+        .domain([0, 1000])
+        .range([0, INNER_HEIGHT]);
 
     function y(d) {
         return HEIGHT - scale(d.wealth);
@@ -64,13 +73,11 @@
         .attr("height", HEIGHT)
         .append("g");
 
-    function update(data) {
+    async function update(data) {
+        console.log(data)
 
         const t = d3.transition()
-            .duration(750);
-
-
-
+            .duration(7500);
 
         const bar = svg.selectAll("g")
             .data(data);
@@ -123,121 +130,6 @@
             .attr("dx", BAR_WIDTH / 2)
             .attr("dy", -2);
     }
-
-    function AnimatedBarChart(data) {
-        const w = 800
-        const h = 500
-        console.log(data)
-        const xScale = d3.scaleBand() //Ordinal scale
-            .domain(d3.range(8)) //sets the input domain for the scale
-            .rangeRound([0, w]) //enables rounding of the range
-            .paddingInner(0.05); //spacing between each bar
-
-        const yScale = d3.scaleLinear()
-            .domain([0, 1000]) //sets the upper end of the input domain to the largest data value in dataset
-            .range([0, h]);
-
-        const svg = d3.select("body")
-            .append("svg")
-            .attr("width", w)
-            .attr("height", h);
-
-        // const chart = d3.select("body")
-        //     .append("svg")
-        //     .attr("width", w)
-        //     .attr("height", h)
-        //     .append("g");
-        //
-        // var bars = chart.selectAll("g")
-        //     .data(data)
-        //     .enter()
-        //     .append("g")
-        //     .attr("class", "chart-bar");
-        // .attr("transform", function (d, i) {
-        //     return "translate(" + d.industry + ",0)";
-        // });
-
-//fill in the bars with color and do nice rising transition
-//         var rect = bars.append("rect")
-//             .attr("y", 500) //setting y at the bottom for the transition effect
-//             .attr("height", 0)      //setting height 0 for the transition effect
-//             .attr("width", xScale.bandwidth()) //Asks for the bandwith of the scale
-//             .style("fill", "rgb(234, 229, 229)")
-//             .transition()
-//             .duration(700)
-//                 .ease("linear")
-//                 .attr("height", h - yScale(d.wealth))
-//                 .attr("y", function (d) {
-//                     return yScale(d.wealth);
-//                 })
-//             .style("fill", "rgb(70, 130, 180)");
-
-        svg.selectAll("rect")
-            .data(data)
-            .enter()
-            .append("rect")
-            .attr("x", function (d, i) { // position in x-axis
-                return xScale(i); // we will pass the values from the dataset
-            })
-            .attr("y", function (d) {
-                return h - yScale(d.wealth);
-            })
-            .attr("width", xScale.bandwidth()) //Asks for the bandwith of the scale
-            .attr("height", function (d) {
-                return yScale(d.wealth);
-            })
-            .attr("fill", function (d) {
-                return "rgb(" + Math.round(d.wealth / 50 * 8) + ",0," + Math.round(d.wealth / 50 * 10) + ")"; //Change the color of the bar depending on the value
-            })
-            .transition()
-            .duration(700)
-            .ease("linear")
-            .attr("height", calcBarHeight)
-            .attr("y", function (d) {
-                return h - yScale(d.wealth);
-            })
-            .style("fill", "rgb(70, 130, 180)");
-
-
-    }
-
-    function changeYear() {
-        Promise.all([
-            d3.csv('billionairesCleanedNoColumn2.csv')
-        ]).then(updateBar)
-
-    }
-
-    function updateBar(d) {
-        const w = 800
-        const h = 500
-        console.log(d[0])
-        const t = d3.transition()
-            .duration(750);
-        const xScale = d3.scaleBand() //Ordinal scale
-            .domain(d3.range(8)) //sets the input domain for the scale
-            .rangeRound([0, w]) //enables rounding of the range
-            .paddingInner(0.05); //spacing between each bar
-
-        const yScale = d3.scaleLinear()
-            .domain([0, 1000]) //sets the upper end of the input domain to the largest data value in dataset
-            .range([0, h]);
-
-        d3.select("body").select("svg").selectAll("rect")
-            .data(d[0])
-            .transition() // <---- Here is the transition
-            .duration(2000) // 2 seconds
-            .attr("y", function (d) {
-                return 500 - yScale(d.wealth);
-            })
-            .attr("height", function (d) {
-                return yScale(d.wealth);
-            })
-            .attr("fill", function (d) {
-                return "rgb(" + Math.round(d.wealth / 50 * 8) + ",0," + Math.round(d.wealth / 50 * 8) + ")";
-            });
-    }
-
 
 </script>
 
