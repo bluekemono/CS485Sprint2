@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
+<!--   <script src=-->
+<!--        "https://d3js.org/d3.v4.min.js">-->
+<!--    </script>-->
+<!--    <script src=-->
+<!--"https://d3js.org/d3-color.v1.min.js">-->
+<!--    </script>-->
+<!--    <script src=-->
+<!--"https://d3js.org/d3-interpolate.v1.min.js">-->
+<!--    </script>-->
+<!--    <script src=-->
+<!--"https://d3js.org/d3-scale-chromatic.v1.min.js">-->
+<!--    </script>-->
+
     <link href="https://fonts.googleapis.com/css?family=Aldrich|Arima+Madurai|Arvo|Henny+Penny|Indie+Flower|Libre+Baskerville|Pirata+One|Poiret+One|Sancreek|Satisfy|Share+Tech+Mono|Smokum|Snowburst+One|Special+Elite"
           rel="stylesheet">
     <path d="M0,0C27.272727272727273,0,27.272727272727273,-80.78125,54.54545454545455,-80.78125"></path>
@@ -25,7 +38,7 @@
         var chart = d3.interval(async function () {
             let updatedData =  await preprocess();
             update(updatedData);
-        },8000);
+        },5000);
     }
 
       async function preprocess() {
@@ -50,11 +63,11 @@
         }
     }
 
-    const WIDTH = 1000;
-    const HEIGHT = 500;
+    const WIDTH = 1200;
+    const HEIGHT = 600;
     const INNER_HEIGHT = HEIGHT - 20;
-    const BAR_WIDTH = 24;
-    const BAR_GAP = 5;
+    const BAR_WIDTH = 60;
+    const BAR_GAP = 50;
 
     const scale = d3.scaleLinear()
         .domain([0, 1000])
@@ -71,6 +84,7 @@
     const svg = d3.select("body").append("svg")
         .attr("width", WIDTH)
         .attr("height", HEIGHT)
+        .attr("viewBox", [-50, 0, WIDTH, HEIGHT])
         .append("g");
 
     async function update(data) {
@@ -96,15 +110,6 @@
             .transition(t)
             .attr("height", HEIGHT);
 
-        bar.select("text")
-            .transition(t)
-            .tween("text", function (d) {
-                const v0 = this.textContent || "0";
-                const v1 = d.wealth;
-                const i = d3.interpolateRound(v0, v1);
-                return t => this.textContent = i(t);
-            });
-
         // ENTER section
         const barEnter = bar
             .enter().append("g")
@@ -113,17 +118,51 @@
         barEnter
             .transition(t)
             .attr("transform", (d, i) => `translate(${i * (BAR_WIDTH + BAR_GAP)},${y(d)})`);
+        // D3.schemeTableau10[2]
+        var color = d3.scaleOrdinal()
+            .range(d3.schemeTableau10);
 
         const rect = barEnter.append("rect")
             .attr("x", 0)
             .attr("y", 0)
             .attr("width", BAR_WIDTH)
-            .attr("height", 0);
+            .attr("height", 0)
+            .attr("fill",function(d){
+                if(d.industry==="communication"){
+                    return d3.schemeTableau10[0]
+                }
+                else if(d.industry==="entertainment"){
+                    return d3.schemeTableau10[1]
+                }
+                else if(d.industry==="finance"){
+                    return d3.schemeTableau10[2]
+                }
+                else if(d.industry==="medicals"){
+                    return d3.schemeTableau10[3]
+                }
+                else if(d.industry==="raw materials"){
+                    return d3.schemeTableau10[4]
+                }
+                else if(d.industry==="real estate"){
+                    return d3.schemeTableau10[5]
+                }
+                else if(d.industry==="retail"){
+                    return d3.schemeTableau10[6]
+                }
+                else if(d.industry==="service"){
+                    return d3.schemeTableau10[7]
+                }
+                else if(d.industry==="technology"){
+                    return d3.schemeTableau10[8]
+                }
+            });
 
         rect
             .transition(t)
             .attr("height", height);
-
+        // if(count===0){
+        //
+        // }
         const text = barEnter.append("text")
             .text(d => d.industry)
             .attr("text-anchor", "middle")
