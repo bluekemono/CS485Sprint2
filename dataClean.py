@@ -153,28 +153,120 @@ def main():
     combinedXarr[0][0] = 0
     combinedXarr[0][1] = 0
 
+    # nineSixXarr = np.zeros((1,9))
+    # for i in range(1, len(X)):
+    #     # print(Xarr[i][2])
+    #     if Xarr[i][2]==1996:
+    #         # nineSixXarr = np.ones((1,9))
+    #         if "software" in Xarr[i][6] or (not isinstance(Xarr[i][18], float) and "Technology-Computer" in Xarr[i][18]):
+    #             nineSixXarr[0][8] += Xarr[i][15]
+    #         elif "communication" in Xarr[i][6]:
+    #             nineSixXarr[0][0] += Xarr[i][15]
+    #         elif "entertainment" in Xarr[i][6]:
+    #             nineSixXarr[0][1] += Xarr[i][15]
+    #         elif "finance" in Xarr[i][6]:
+    #             nineSixXarr[0][2] += Xarr[i][15]
+    #         elif "medicals" in Xarr[i][6]:
+    #             nineSixXarr[0][3] += Xarr[i][15]
+    #         elif "raw materials" in Xarr[i][6]:
+    #             nineSixXarr[0][4] += Xarr[i][15]
+    #         elif "real estate" in Xarr[i][6]:
+    #             nineSixXarr[0][5] += Xarr[i][15]
+    #         elif "retail" in Xarr[i][6]:
+    #             nineSixXarr[0][6] += Xarr[i][15]
+    #         elif "service" in Xarr[i][6]:
+    #             nineSixXarr[0][7] += Xarr[i][15]
+    # nineSixX = pd.DataFrame(columns=column_name, data=nineSixXarr)
+    # # combinedX.to_csv('billionairesCleaned.csv')
+    # nineSixX.to_csv('billionaires1996.csv')
+
+    Xarr1996 = np.zeros((1, 9))
     for i in range(1, len(X)):
-        # print(Xarr[i][18])
-        if "software" in Xarr[i][6] or (not isinstance(Xarr[i][18], float) and "Technology-Computer" in Xarr[i][18]) :
-            combinedXarr[0][8] += Xarr[i][15]
-        elif "communication" in Xarr[i][6]:
-            combinedXarr[0][0] += Xarr[i][15]
-        elif "entertainment" in Xarr[i][6]:
-            combinedXarr[0][1] += Xarr[i][15]
-        elif "finance" in Xarr[i][6]:
-            combinedXarr[0][2] += Xarr[i][15]
-        elif "medicals" in Xarr[i][6]:
-            combinedXarr[0][3] += Xarr[i][15]
-        elif "raw materials" in Xarr[i][6]:
-            combinedXarr[0][4] += Xarr[i][15]
-        elif "real estate" in Xarr[i][6]:
-            combinedXarr[0][5] += Xarr[i][15]
-        elif "retail" in Xarr[i][6]:
-            combinedXarr[0][6] += Xarr[i][15]
-        elif "service" in Xarr[i][6]:
-            combinedXarr[0][7] += Xarr[i][15]
-    combinedX = pd.DataFrame(columns=column_name,data=combinedXarr)
-    combinedX.to_csv('billionairesCleaned.csv')
+        # print(Xarr[i][2])
+        if Xarr[i][2] == 1996:
+            # nineSixXarr = np.ones((1,9))
+            if "software" in Xarr[i][6] or (
+                    not isinstance(Xarr[i][18], float) and "Technology-Computer" in Xarr[i][18]):
+                Xarr1996[0][8] += Xarr[i][15]
+            elif "communication" in Xarr[i][6]:
+                Xarr1996[0][0] += Xarr[i][15]
+            elif "entertainment" in Xarr[i][6]:
+                Xarr1996[0][1] += Xarr[i][15]
+            elif "finance" in Xarr[i][6]:
+                Xarr1996[0][2] += Xarr[i][15]
+            elif "medicals" in Xarr[i][6]:
+                Xarr1996[0][3] += Xarr[i][15]
+            elif "raw materials" in Xarr[i][6]:
+                Xarr1996[0][4] += Xarr[i][15]
+            elif "real estate" in Xarr[i][6]:
+                Xarr1996[0][5] += Xarr[i][15]
+            elif "retail" in Xarr[i][6]:
+                Xarr1996[0][6] += Xarr[i][15]
+            elif "service" in Xarr[i][6]:
+                Xarr1996[0][7] += Xarr[i][15]
+    X1996 = pd.DataFrame(columns=column_name, data=Xarr1996)
+    # combinedX.to_csv('billionairesCleaned.csv')
+    X1996.to_csv('billionaires1996.csv')
+
+
+    Xarr2001 = np.zeros((1, 9))
+    for i in range(1, len(X)):
+        # print(Xarr[i][2])
+        if Xarr[i][2] == 2001:
+            # nineSixXarr = np.ones((1,9))
+            if "software" in Xarr[i][6] or (
+                    not isinstance(Xarr[i][18], float) and "Technology-Computer" in Xarr[i][18]):
+                Xarr2001[0][8] += Xarr[i][15]
+            elif "communication" in Xarr[i][6]:
+                Xarr2001[0][0] += Xarr[i][15]
+            elif "entertainment" in Xarr[i][6]:
+                Xarr2001[0][1] += Xarr[i][15]
+            elif "finance" in Xarr[i][6]:
+                Xarr2001[0][2] += Xarr[i][15]
+            elif "medicals" in Xarr[i][6]:
+                Xarr2001[0][3] += Xarr[i][15]
+            elif "raw materials" in Xarr[i][6]:
+                Xarr2001[0][4] += Xarr[i][15]
+            elif "real estate" in Xarr[i][6]:
+                Xarr2001[0][5] += Xarr[i][15]
+            elif "retail" in Xarr[i][6]:
+                Xarr2001[0][6] += Xarr[i][15]
+            elif "service" in Xarr[i][6]:
+                Xarr2001[0][7] += Xarr[i][15]
+    X2001 = pd.DataFrame(columns=column_name, data=Xarr2001)
+    # combinedX.to_csv('billionairesCleaned.csv')
+    X2001.to_csv('billionaires2001.csv')
+
+
+    Xarr2014 = np.zeros((1, 9))
+    for i in range(1, len(X)):
+        # print(Xarr[i][2])
+        if Xarr[i][2] == 2014:
+            # nineSixXarr = np.ones((1,9))
+            if "software" in Xarr[i][6] or (
+                    not isinstance(Xarr[i][18], float) and "Technology-Computer" in Xarr[i][18]):
+                Xarr2014[0][8] += Xarr[i][15]
+            elif "communication" in Xarr[i][6]:
+                Xarr2014[0][0] += Xarr[i][15]
+            elif "entertainment" in Xarr[i][6]:
+                Xarr2014[0][1] += Xarr[i][15]
+            elif "finance" in Xarr[i][6]:
+                Xarr2014[0][2] += Xarr[i][15]
+            elif "medicals" in Xarr[i][6]:
+                Xarr2014[0][3] += Xarr[i][15]
+            elif "raw materials" in Xarr[i][6]:
+                Xarr2014[0][4] += Xarr[i][15]
+            elif "real estate" in Xarr[i][6]:
+                Xarr2014[0][5] += Xarr[i][15]
+            elif "retail" in Xarr[i][6]:
+                Xarr2014[0][6] += Xarr[i][15]
+            elif "service" in Xarr[i][6]:
+                Xarr2014[0][7] += Xarr[i][15]
+    X2014 = pd.DataFrame(columns=column_name, data=Xarr2014)
+    # combinedX.to_csv('billionairesCleaned.csv')
+    X2014.to_csv('billionaires2014.csv')
+
+
     print(combinedXarr)
 
 
